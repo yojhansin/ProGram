@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Program - Red Social</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+    }
+
+    header {
+      background-color: #1877f2;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      font-size: 22px;
+    }
+
+    header select {
+      padding: 8px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+    }
+
+    .contenedor {
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .publicacion {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 25px;
+      padding: 15px;
+    }
+
+    .usuario {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .imagen-publicacion {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .acciones-comentario {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      align-items: center;
+    }
+
+    input, select {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 25px;
+      font-size: 14px;
+    }
+
+    .comentario-input {
+      flex: 1;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background-color: #1877f2;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #155db8;
+    }
+
+    .comentario, .respuesta {
+      background-color: #f0f2f5;
+      padding: 10px 15px;
+      border-radius: 15px;
+      margin-top: 10px;
+      position: relative;
+    }
+
+    .respuesta {
+      margin-left: 30px;
+    }
+
+    .autor {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .like-btn, .responder-btn {
+      background-color: transparent;
+      border: none;
+      color: #1877f2;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 0;
+      margin-right: 10px;
+    }
+
+    .like-btn:hover, .responder-btn:hover {
+      text-decoration: underline;
+    }
+
+    .responder-form {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .responder-form input {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    Program
+    <select id="usuarioSelect">
+      <option value="Juan">Juan</option>
+      <option value="Ana">Ana</option>
+      <option value="Carlos">Carlos</option>
+    </select>
+  </header>
+
+  <div class="contenedor">
+
+    <div class="publicacion">
+      <div class="usuario">FC Barcelona</div>
+      <img src="assets/img/barcelona.webp" alt="Publicación" class="imagen-publicacion">
+      <p>¡Visca el Barça! 💙❤️</p>
+
+      <div class="acciones-comentario">
+        <input type="text" id="comentarioInput" placeholder="Escribe un comentario..." class="comentario-input">
+        <button class="btn" onclick="agregarComentario()">Comentar</button>
+      </div>
+
+      <div id="comentarios">
+        <!-- aca se insertaran los comentarios -->
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function agregarComentario(texto = null, contenedor = null, esRespuesta = false) {
+      const input = texto ? null : document.getElementById("comentarioInput");
+      const comentarioTexto = texto || (input ? input.value.trim() : "");
+      const usuario = document.getElementById("usuarioSelect").value;
+
+      if (comentarioTexto === "") return;
+
+      const nuevoComentario = document.createElement("div");
+      nuevoComentario.className = esRespuesta ? "respuesta" : "comentario";
+
+      const autor = document.createElement("div");
+      autor.className = "autor";
+      autor.textContent = usuario;
+
+      const contenido = document.createElement("div");
+      contenido.textContent = comentarioTexto;
+
+      const acciones = document.createElement("div");
+
+      let likes = 0;
+      const likeBtn = document.createElement("button");
+      likeBtn.className = "like-btn";
+      likeBtn.textContent = "👍 Me gusta (0)";
+      likeBtn.onclick = () => {
+        likes++;
+        likeBtn.textContent = `👍 Me gusta (${likes})`;
+      };
+
+      const responderBtn = document.createElement("button");
+      responderBtn.className = "responder-btn";
+      responderBtn.textContent = "Responder";
+      responderBtn.onclick = () => mostrarFormularioRespuesta(nuevoComentario);
+
+      acciones.appendChild(likeBtn);
+      acciones.appendChild(responderBtn);
+
+      nuevoComentario.appendChild(autor);
+      nuevoComentario.appendChild(contenido);
+      nuevoComentario.appendChild(acciones);
+
+      if (!esRespuesta) {
+        document.getElementById("comentarios").appendChild(nuevoComentario);
+        if (input) input.value = "";
+      } else {
+        contenedor.appendChild(nuevoComentario);
+      }
+    }
+
+    function mostrarFormularioRespuesta(comentarioElemento) {
+      // Verifica si ya hay un formulario
+      if (comentarioElemento.querySelector('.responder-form')) return;
+
+      const form = document.createElement("div");
+      form.className = "responder-form";
+
+      const inputRespuesta = document.createElement("input");
+      inputRespuesta.type = "text";
+      inputRespuesta.placeholder = "Responder...";
+
+      const btnEnviar = document.createElement("button");
+      btnEnviar.className = "btn";
+      btnEnviar.textContent = "Enviar";
+      btnEnviar.onclick = () => {
+        const texto = inputRespuesta.value.trim();
+        if (texto !== "") {
+          agregarComentario(texto, comentarioElemento, true);
+          form.remove();
+        }
+      };
+
+      form.appendChild(inputRespuesta);
+      form.appendChild(btnEnviar);
+      comentarioElemento.appendChild(form);
+    }
+  </script>
+
+</body>
+</html>
