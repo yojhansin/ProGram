@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+      
+        .card{
+            background-color: rgba(0, 0, 0, 0.301);
+            margin-top: 30%;
+            margin: 20%;
+        }
+        h1{
+            position: relative;
+            text-align: center;
+            
+        }
+        img{
+            display: block;
+            width: 50%;
+            margin: 20%;
+        }
+        p{
+            margin: 10%;
+
+        }
+        .boton{
+            margin-left: 10%;
+            margin-bottom: 5%;
+        }
+        .corazon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      font-size: 60px;
+      color: red;
+      pointer-events: none;
+      opacity: 0;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+      z-index: 2;
+        }
+
+
+
+        
+        
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>prueba html</h1>
+        <img  id="messi" src="https://images.hdqwalls.com/wallpapers/lionel-messi-fifa-world-cup-qatar-4k-mu.jpg" alt="">
+         <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Saepe explicabo itaque fuga hic, tenetur recusandae.</p>
+         <div class="corazon">❤️</div>
+         <button class="boton">comentar</button>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function(){
+            $('#messi').dblclick(function(){
+
+                let corazon = $(this).siblings('.corazon');
+                corazon.css({
+                     'opacity' : '1',
+                     'transform':'translate(-50%, -50%) scale(1)'
+                });
+                setTimeout(function(){
+                    corazon.css({
+                        'opacity' : '0',
+                        'transform' : 'translate(-50%, -50%) scale(0)'
+                    });
+                },1000);
+            });
+        });
+
+    </script>
+    
+</body>
+</html>

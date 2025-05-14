@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+        body {
+          font-family: 'Segoe UI', sans-serif;
+          background-color: #f0f2f5;
+          margin: 0;
+        }
+    
+        header {
+          background-color: #1877f2;
+          color: white;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 15px 30px;
+          font-size: 22px;
+        }
+    
+        header select {
+          padding: 8px;
+          border-radius: 8px;
+          border: none;
+          font-size: 14px;
+        }
+    
+        .contenedor {
+          max-width: 700px;
+          margin: auto;
+          padding: 20px;
+        }
+    
+        .publicacion {
+          background-color: #fff;
+          border-radius: 10px;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+          margin-bottom: 25px;
+          padding: 15px;
+        }
+    
+        .usuario {
+          font-weight: bold;
+          margin-bottom: 8px;
+        }
+    
+        .imagen-publicacion {
+          width: 100%;
+          border-radius: 10px;
+          margin-bottom: 10px;
+        }
+    
+        .acciones-comentario {
+          display: flex;
+          gap: 10px;
+          margin-top: 10px;
+          align-items: center;
+        }
+    
+        input, select {
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 25px;
+          font-size: 14px;
+        }
+    
+        .comentario-input {
+          flex: 1;
+        }
+    
+        .btn {
+          padding: 10px 20px;
+          background-color: #1877f2;
+          color: white;
+          border: none;
+          border-radius: 25px;
+          cursor: pointer;
+        }
+    
+        .btn:hover {
+          background-color: #155db8;
+        }
+    
+        .comentario, .respuesta {
+          background-color: #f0f2f5;
+          padding: 10px 15px;
+          border-radius: 15px;
+          margin-top: 10px;
+          position: relative;
+        }
+    
+        .respuesta {
+          margin-left: 30px;
+        }
+    
+        .autor {
+          font-weight: bold;
+          margin-bottom: 5px;
+        }
+    
+        .like-btn, .responder-btn {
+          background-color: transparent;
+          border: none;
+          color: #1877f2;
+          cursor: pointer;
+          font-size: 14px;
+          padding: 0;
+          margin-right: 10px;
+        }
+    
+        .like-btn:hover, .responder-btn:hover {
+          text-decoration: underline;
+        }
+    
+        .responder-form {
+          display: flex;
+          gap: 10px;
+          margin-top: 8px;
+        }
+    
+        .responder-form input {
+          flex: 1;
+        }
+      </style>
+    </head>
+    <body>
+    
+      <header>
+        Program
+        <select id="usuarioSelect">
+          <option value="Juan">Juan</option>
+          <option value="Ana">Ana</option>
+          <option value="Carlos">Carlos</option>
+        </select>
+      </header>
+    
+      <div class="contenedor">
+    
+        <div class="publicacion">
+          <div class="usuario">FC Barcelona</div>
+          <img src="assets/img/barcelona.webp" alt="Publicación" class="imagen-publicacion">
+          <p>¡Visca el Barça! 💙❤️</p>
+    
+          <div class="acciones-comentario">
+            <input type="text" id="comentarioInput" placeholder="Escribe un comentario..." class="comentario-input">
+            <button class="btn" onclick="agregarComentario()">Comentar</button>
+          </div>
+    
+          <div id="comentarios">
+            
+          </div>
+        </div>
+    
+      </div>
+
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script>
+        function agregarComentario(texto, contenedor, esRespuesta) {
+          let input = texto ? null : $('#comentarioInput');
+          let comentarioTexto = texto || (input.length ? input.val().trim() : "");
+          let usuario = $('#usuarioSelect').val();
+      
+          if (comentarioTexto === "") return;
+      
+          let nuevoComentario = $('<div></div>');
+          if (esRespuesta) {
+            nuevoComentario.addClass('respuesta');
+          } else {
+            nuevoComentario.addClass('comentario');
+          }
+      
+          let autor = $('<div></div>');
+          autor.addClass('autor');
+          autor.text(usuario);
+      
+          let contenido = $('<div></div>');
+          contenido.text(comentarioTexto);
+      
+          let acciones = $('<div></div>');
+      
+          let likes = 0;
+          let likeBtn = $('<button></button>');
+          likeBtn.addClass('like-btn');
+          likeBtn.text("👍 Me gusta (0)");
+          likeBtn.click(function () {
+            likes++;
+            likeBtn.text("👍 Me gusta (" + likes + ")");
+          });
+      
+          let responderBtn = $('<button></button>');
+          responderBtn.addClass('responder-btn');
+          responderBtn.text("Responder");
+          responderBtn.click(function () {
+            mostrarFormularioRespuesta(nuevoComentario);
+          });
+      
+          acciones.append(likeBtn);
+          acciones.append(responderBtn);
+      
+          nuevoComentario.append(autor);
+          nuevoComentario.append(contenido);
+          nuevoComentario.append(acciones);
+      
+          if (!esRespuesta) {
+            $('#comentarios').append(nuevoComentario);
+            if (input) {
+              input.val('');
+            }
+          } else {
+            $(contenedor).append(nuevoComentario);
+          }
+        }
+      
+         function mostrarFormularioRespuesta(comentarioElemento) {
+          let $comentario = $(comentarioElemento);
+      
+          if ($comentario.find('.responder-form').length > 0) return;
+      
+          let form = $('<div></div>');
+          form.addClass('responder-form');
+      
+          let inputRespuesta = $('<input>');
+          inputRespuesta.attr('type', 'text');
+          inputRespuesta.attr('placeholder', 'Responder...');
+      
+          let btnEnviar = $('<button></button>');
+          btnEnviar.addClass('btn');
+          //.text y .addclass (metodos)
+          btnEnviar.text('Enviar');
+      
+          btnEnviar.click(function () {
+            let texto = inputRespuesta.val().trim();
+            if (texto !== "") {
+              agregarComentario(texto, comentarioElemento, true);
+              form.remove();
+            }
+          });
+      
+          form.append(inputRespuesta);
+          form.append(btnEnviar);
+          $comentario.append(form);
+        }
+      </script>
+      
+
+
+
+
+
+
+
+
+
+    
+
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+</body>
+</html>
